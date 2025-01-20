@@ -2,13 +2,13 @@ name: Continuous Delivery
 
 on:
   workflow_run:
-    workflows: ["Continuous Integration"]
+    workflows: ["Continuous-Integration"]
     types:
       - completed
 
 jobs:
   build-docker:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Pull Docker image
         run: sudo docker pull dharanshneema/heart-disease-detection-ml:latest
