@@ -11,10 +11,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Pull Docker image
-        run: |
-          sudo docker pull dharanshneema/heart-disease-detection-ml:latest
+        run: sudo docker pull dharanshneema/heart-disease-detection-ml:latest
       - name: Delete Old Docker Container
-        run: |
-          sudo docker rm -f heart-disease-container || true
+        run: sudo docker rm -f heart-disease-container || true
       - name: Run Docker Container
-        run: sudo docker run -d -p 8051:8051 --name heart-disease-container dharanshneema/heart-disease-detection-ml:latest
+        run: sudo docker run -d -p 8051:8051 --name heart-disease-container dharanshneema/heart-disease-detection-ml
