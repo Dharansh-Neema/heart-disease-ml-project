@@ -1,0 +1,61 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python3
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Data Ingestion Script
+        run: |
+          python src/data-ingestion.py
+
+      - name: Run Data processing Script
+        run: |
+          python src/data-processing.py
+
+      - name: Run Model Training Script
+        run: |
+          python src/model-training.py
+
+      - name: Run Model evaluation Script
+        run: |
+          python src/model-evaluation.py
+
+  build-docker:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t dharanshneema/heart-disease-detection-ml:latest .
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push dharanshneema/heart-disease-detection-ml:latest
