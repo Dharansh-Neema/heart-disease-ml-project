@@ -1,0 +1,7 @@
+ipykernel
+pandas
+matplotlib
+scikit-learn
+dvc
+awscli
+logging
