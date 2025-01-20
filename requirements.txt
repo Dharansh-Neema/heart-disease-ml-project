@@ -2,5 +2,4 @@ ipykernel
 pandas
 matplotlib
 scikit-learn
-logging
 streamlit
