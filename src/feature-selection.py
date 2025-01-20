@@ -40,8 +40,7 @@ def load_data(file_path:str)->pd.DataFrame:
     except Exception as e:
         logger.error("Unexpected error occured while feature selection and loading the data %s",e)
         raise
-def apply_chi2(train_data:pd.DataFrame,test_data:pd.DataFrame,max_features:int)->tuple:
-    """Applying Logestic feature selection""" 
+
 def save_data(df: pd.DataFrame, file_path: str) -> None:
     """Save the dataframe to a CSV file."""
     try:
