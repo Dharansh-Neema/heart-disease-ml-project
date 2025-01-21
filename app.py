@@ -27,7 +27,7 @@ def predict_heart_disease(model, features):
 st.set_page_config(page_title="Heart Disease Prediction", layout="wide")
 
 # Main title
-st.title("Heart Disease Prediction using Machine Learning")
+st.title("Heart Disease Prediction using Niyo")
 st.write("Enter the patient's information to predict heart disease risk")
 
 # Load model
