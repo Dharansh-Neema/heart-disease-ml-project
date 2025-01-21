@@ -39,6 +39,12 @@ jobs:
         run: |
           ssh -T -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem ubuntu@$EC2_HOST "sudo docker rm -f heart-disease-container || true"
 
+      - name: Old images Pruning
+        env:
+          EC2_HOST: 3.110.165.70
+        run: |
+          ssh -T -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem ubuntu@$EC2_HOST "sudo docker image prune -f"
+
       - name: Start the new Docker container
         env:
           EC2_HOST: 3.110.165.70
