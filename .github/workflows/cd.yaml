@@ -26,17 +26,25 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem ubuntu@$EC2_HOST "echo Connected successfully"
 
-      - name: Deploy Docker on EC2
+      - name: Pull the latest Docker image on EC2
         env:
           EC2_HOST: 3.110.165.70
           DOCKER_IMAGE: dharanshneema/heart-disease-detection-ml
         run: |
-          ssh -T -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem ubuntu@$EC2_HOST << 'EOF'
-          sudo docker stop heart-disease-container || true
-          sudo docker rm heart-disease-container || true
-          sudo docker pull $DOCKER_IMAGE
-          sudo docker run -d -p 8501:8501 --name my-app $DOCKER_IMAGE
-          EOF
+          ssh -T -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem ubuntu@$EC2_HOST "sudo docker pull $DOCKER_IMAGE:latest"
+
+      - name: Remove the old Docker container
+        env:
+          EC2_HOST: 3.110.165.70
+        run: |
+          ssh -T -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem ubuntu@$EC2_HOST "sudo docker rm -f heart-disease-container || true"
+
+      - name: Start the new Docker container
+        env:
+          EC2_HOST: 3.110.165.70
+          DOCKER_IMAGE: dharanshneema/heart-disease-detection-ml
+        run: |
+          ssh -T -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem ubuntu@$EC2_HOST "sudo docker run -d -p 8501:8501 --name heart-disease-container $DOCKER_IMAGE"
 
 # name: Continuous Delivery
 
