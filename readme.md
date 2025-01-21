@@ -1,36 +1,47 @@
-# Heart Disease Detection
+# Heart-Disease-Detection MLops
 
-This ML project has analysed the heart-disease using 14 attributes such as age,Chest Pain,thacal,etc.. more information on the **jupyter notebook**.
+## Description
 
-## Setup this project
+This project implements a Machine Learning Operations (MLops) pipeline to automate the deployment of a heart disease detection application. The key features include:
 
-**Pre-Requisite : Conda & GIT installed in your PC**  
-Now let's get started
+1. **CI/CD Pipeline**:
 
-### 1. Clone this project
+   - **CI (Continuous Integration)**: A GitHub Actions pipeline that runs on every push to the repository. It executes scripts for data ingestion, processing, model training, and evaluation. Following these steps, a Docker image is built and pushed to Docker Hub.
+   - **CD (Continuous Deployment)**: Once the CI pipeline completes, the CD pipeline is triggered. It connects to an AWS EC2 instance, pulls the latest Docker image, removes any running containers, and deploys the new container.
 
-`git clone https://github.com/Dharansh-Neema/heart-disease-ml-project.git`
+2. **Data Pipeline**:
 
-This will clone the whole project to your local PC
+   - Data ingestion, processing, and model training scripts are modularized in the `src` folder. These scripts ensure that the latest data is used to train and evaluate the model, making it production-ready.
 
-### 2. Run the enviornement file
+3. **AWS Deployment**:
+   - The application is hosted on an AWS EC2 instance. Docker ensures seamless containerization, enabling easy updates and scalability.
 
-To Run the project successfully we need to setup our enviornment first.
+---
 
-You might need to change the --prefix path to your path, you can find the prefix path at last of environment. yml file and if you want you can change _Name_ also.
+## Project Flow
 
-To do so run the following command:
+![Project Flowchart](https://github.com/Dharansh-Neema/heart-disease-ml-project/blob/main/img/FlowChart.png)
 
-`conda env create --prefix ./env -f ./environment.yml`
+---
 
-`conda activate path:/env>`
+## Setup Instructions
 
-This will create a directory **\*env** and change it's enviornment
-Example : **`conda activate E:\heart-disease\heart-disease-ml-project\env`**
+To run the application locally using Docker, follow these steps:
 
-### 3. Run the Jupyter notebook
+1. Pull the Docker image from Docker Hub:
 
-On Conda terminal with the env setup just type  
- `jupyter notebook`
+   ```bash
+   docker pull dharanshneema/heart-disease-detection-ml
+   ```
 
-And congrats you have set-up this model locally.
+2. Run the Docker container:
+
+   ```bash
+   docker run -p 8051:8051 dharanshneema/heart-disease-detection-ml
+   ```
+
+3. Access the application:
+   Open your browser and navigate to:
+   [http://localhost:8051](http://localhost:8051)
+
+The application should now be running locally on your system.
