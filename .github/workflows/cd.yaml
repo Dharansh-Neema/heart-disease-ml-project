@@ -1,4 +1,4 @@
-name: Continuous Delivery
+name: Deploy to EC2
 
 on:
   workflow_run:
@@ -7,25 +7,66 @@ on:
       - completed
 
 jobs:
-  deploy-on-ec2:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Set up AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1 # Replace with your desired region
-
-      - name: Connect to EC2 instance
+      - name: Set up SSH key
         run: |
-          ssh -i ${{ secrets.EC2_KEY_PAIR_PEM }} ubuntu@ec2-3-110-165-70.ap-south-1.compute.amazonaws.com
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_KEY_PAIR_PEM }}" > ~/.ssh/ec2-key.pem
+          chmod 400 ~/.ssh/ec2-key.pem
+          ls -l ~/.ssh
 
-      - name: Pull Docker image
-        run: sudo docker pull dharanshneema/heart-disease-detection-ml:latest
-      - name: Delete Old Docker Container
-        run: sudo docker rm -f heart-disease-container || true
-      - name: Run Docker Container
-        run: sudo docker run -d -p 8501:8501 --name heart-disease-container dharanshneema/heart-disease-detection-ml
+      - name: Test SSH Connection
+        env:
+          EC2_HOST: 3.110.165.70
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem ubuntu@$EC2_HOST "echo Connected successfully"
+
+      - name: Deploy Docker on EC2
+        env:
+          EC2_HOST: 3.110.165.70
+          DOCKER_IMAGE: dharanshneema/heart-disease-detection-ml
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem ubuntu@$EC2_HOST << 'EOF'
+          docker stop my-app || true
+          docker rm my-app || true
+          docker pull $DOCKER_IMAGE
+          docker run -d -p 8501:8501 --name my-app $DOCKER_IMAGE
+          EOF
+
+# name: Continuous Delivery
+
+# on:
+#   workflow_run:
+#     workflows: ["Continuous-Integration"]
+#     types:
+#       - completed
+
+# jobs:
+#   deploy-on-ec2:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+
+#       - name: Set up AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ap-south-1 # Replace with your desired region
+
+#       - name: Connect to EC2 instance
+#         run: |
+#           ssh -i ${{ secrets.EC2_KEY_PAIR_PEM }} ubuntu@ec2-3-110-165-70.ap-south-1.compute.amazonaws.com
+
+#       - name: Pull Docker image
+#         run: sudo docker pull dharanshneema/heart-disease-detection-ml:latest
+#       - name: Delete Old Docker Container
+#         run: sudo docker rm -f heart-disease-container || true
+#       - name: Run Docker Container
+#         run: sudo docker run -d -p 8501:8501 --name heart-disease-container dharanshneema/heart-disease-detection-ml
+
