@@ -1,5 +1,5 @@
 # Heart-Disease-Detection MLops
-
+### [Deployed Link](http://3.110.165.70:8501/)
 ## Description
 
 This project implements a Machine Learning Operations (MLops) pipeline to automate the deployment of a heart disease detection application. The key features include:
@@ -14,7 +14,9 @@ This project implements a Machine Learning Operations (MLops) pipeline to automa
    - Data ingestion, processing, and model training scripts are modularized in the `src` folder. These scripts ensure that the latest data is used to train and evaluate the model, making it production-ready.
 
 3. **AWS Deployment**:
-   - The application is hosted on an AWS EC2 instance. Docker ensures seamless containerization, enabling easy updates and scalability. \href{http://3.110.165.70:8501/}{Deployed Link}
+   - The application is hosted on an AWS EC2 instance. Docker ensures seamless containerization, enabling easy updates and scalability.
+   - [Deployed Link of EC2](http://3.110.165.70:8501/)
+
 
 ---
 
